@@ -12,7 +12,7 @@ use function Dgame\Ensurance\enforce;
  * Class ObjectFacade
  * @package Dgame\Object
  */
-final class ObjectFacade
+class ObjectFacade
 {
     const DEBUG_LABEL = 'Dgame_Object_Facade';
 
@@ -67,7 +67,7 @@ final class ObjectFacade
     /**
      * @return object
      */
-    public function getObject()
+    final public function getObject()
     {
         return $this->object;
     }
@@ -75,7 +75,7 @@ final class ObjectFacade
     /**
      * @return ReflectionClass
      */
-    public function getReflection(): ReflectionClass
+    final public function getReflection(): ReflectionClass
     {
         if ($this->reflection === null) {
             $this->reflection = new ReflectionClass($this->object);
@@ -90,7 +90,7 @@ final class ObjectFacade
      *
      * @return bool
      */
-    public function setValueByProperty(string $name, $value): bool
+    final public function setValueByProperty(string $name, $value): bool
     {
         $property = $this->getPropertyByName($name);
         if ($property !== null && $this->validateProperty($property)) {
@@ -130,7 +130,7 @@ final class ObjectFacade
      *
      * @return bool
      */
-    public function setValueByMethod(string $name, $value): bool
+    final public function setValueByMethod(string $name, $value): bool
     {
         $method = $this->getSetterMethod($name);
         if ($method !== null && $this->validateSetterMethod($method, $value)) {
@@ -194,7 +194,7 @@ final class ObjectFacade
      *
      * @return mixed|null
      */
-    public function getValueByMethod(string $name)
+    final public function getValueByMethod(string $name)
     {
         $method = $this->getGetterMethod($name);
         if ($method !== null && $this->validateGetterMethod($method)) {
@@ -230,7 +230,7 @@ final class ObjectFacade
      *
      * @return mixed|null
      */
-    public function getValueByProperty(string $name)
+    final public function getValueByProperty(string $name)
     {
         $property = $this->getPropertyByName($name);
         if ($property !== null && $this->validateProperty($property)) {
@@ -245,7 +245,7 @@ final class ObjectFacade
      *
      * @return null|ReflectionMethod
      */
-    public function getSetterMethod(string $postfix)
+    final public function getSetterMethod(string $postfix)
     {
         return $this->getMethod($postfix, ['set', 'append']);
     }
@@ -255,7 +255,7 @@ final class ObjectFacade
      *
      * @return null|ReflectionMethod
      */
-    public function getGetterMethod(string $postfix)
+    final public function getGetterMethod(string $postfix)
     {
         return $this->getMethod($postfix, ['get']);
     }
@@ -266,7 +266,7 @@ final class ObjectFacade
      *
      * @return null|ReflectionMethod
      */
-    public function getMethod(string $postfix, array $prefixe)
+    final public function getMethod(string $postfix, array $prefixe)
     {
         foreach ($prefixe as $prefix) {
             $method = $this->getMethodByName($prefix . ucfirst($postfix));
@@ -283,7 +283,7 @@ final class ObjectFacade
      *
      * @return null|ReflectionMethod
      */
-    public function getMethodByName(string $name)
+    final public function getMethodByName(string $name)
     {
         return $this->hasMethod($name) ? $this->getReflection()->getMethod($name) : null;
     }
@@ -293,7 +293,7 @@ final class ObjectFacade
      *
      * @return null|ReflectionProperty
      */
-    public function getPropertyByName(string $name)
+    final public function getPropertyByName(string $name)
     {
         return $this->hasProperty($name) ? $this->getReflection()->getProperty($name) : null;
     }
@@ -303,7 +303,7 @@ final class ObjectFacade
      *
      * @return bool
      */
-    public function hasProperty(string $name): bool
+    final public function hasProperty(string $name): bool
     {
         return $this->getReflection()->hasProperty($name);
     }
@@ -313,7 +313,7 @@ final class ObjectFacade
      *
      * @return bool
      */
-    public function hasMethod(string $name): bool
+    final public function hasMethod(string $name): bool
     {
         return $this->getReflection()->hasMethod($name);
     }
