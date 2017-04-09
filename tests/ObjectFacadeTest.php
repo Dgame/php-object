@@ -14,33 +14,24 @@ use ReflectionProperty;
  */
 final class ObjectFacadeTest extends TestCase
 {
-    public function testExists()
-    {
-        $this->assertTrue(ObjectFacade::exists(static::class));
-        $this->assertTrue(ObjectFacade::exists(Exception::class));
-        $this->assertTrue(ObjectFacade::exists('\Exception'));
-        $this->assertTrue(ObjectFacade::exists('Exception'));
-        $this->assertFalse(ObjectFacade::exists('Object'));
-    }
-
     public function testHasMethod()
     {
-        $this->assertTrue(ObjectFacade::new(Exception::class)->hasMethod('getMessage'));
-        $this->assertFalse(ObjectFacade::new(Exception::class)->hasMethod('foo'));
+        $this->assertTrue($this->new(Exception::class)->hasMethod('getMessage'));
+        $this->assertFalse($this->new(Exception::class)->hasMethod('foo'));
     }
 
     public function testHasProperty()
     {
         foreach (['message', 'code', 'file', 'line'] as $property) {
-            $this->assertTrue(ObjectFacade::new(Exception::class)->hasProperty($property));
+            $this->assertTrue($this->new(Exception::class)->hasProperty($property));
         }
-        $this->assertFalse(ObjectFacade::new(Exception::class)->hasProperty('foo'));
+        $this->assertFalse($this->new(Exception::class)->hasProperty('foo'));
     }
 
     public function testGetPropertyByName()
     {
         foreach (['message', 'code', 'file', 'line'] as $name) {
-            $property = ObjectFacade::new(Exception::class)->getPropertyByName($name);
+            $property = $this->new(Exception::class)->getPropertyByName($name);
 
             $this->assertNotNull($property);
             $this->assertEquals($name, $property->getName());
@@ -50,7 +41,7 @@ final class ObjectFacadeTest extends TestCase
 
     public function testGetMethodByName()
     {
-        $method = ObjectFacade::new(Exception::class)->getMethodByName('getMessage');
+        $method = $this->new(Exception::class)->getMethodByName('getMessage');
 
         $this->assertNotNull($method);
         $this->assertEquals('getMessage', $method->getName());
@@ -59,7 +50,7 @@ final class ObjectFacadeTest extends TestCase
 
     public function testGetterMethod()
     {
-        $method = ObjectFacade::new(Exception::class)->getGetterMethod('message');
+        $method = $this->new(Exception::class)->getGetterMethod('message');
 
         $this->assertNotNull($method);
         $this->assertEquals('getMessage', $method->getName());
@@ -106,8 +97,8 @@ final class ObjectFacadeTest extends TestCase
         $this->assertEquals(42, $facade->getValueByProperty('foo'));
         $this->assertEquals(Exception::class, $facade->getValueByProperty('bar'));
         $this->assertNull($facade->getValueByProperty('unknown'));
-        $this->assertNull(ObjectFacade::new(Exception::class)->getValueByProperty('line'));
-        $this->assertNull(ObjectFacade::new(Exception::class)->getValueByProperty('file'));
+        $this->assertNull($this->new(Exception::class)->getValueByProperty('line'));
+        $this->assertNull($this->new(Exception::class)->getValueByProperty('file'));
     }
 
     public function testSetValueByMethod()
@@ -181,5 +172,10 @@ final class ObjectFacadeTest extends TestCase
         $facade->setValueByProperty('foo', 1337);
         $this->assertEquals(1337, $facade->getValueByProperty('foo'));
         $this->assertEquals($facade->getObject()->foo, $facade->getValueByProperty('foo'));
+    }
+
+    private function new(string $class)
+    {
+        return new ObjectFacade(new $class());
     }
 }

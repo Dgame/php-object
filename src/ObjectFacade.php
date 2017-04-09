@@ -28,40 +28,13 @@ class ObjectFacade
     /**
      * ObjectFacade constructor.
      *
-     * @param $object
+     * @param object $object
      */
     public function __construct($object)
     {
-        enforce(is_object($object))->orThrow('That is not an object');
+        enforce(is_object($object))->orThrow('That is not a valid object');
 
         $this->object = $object;
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return ObjectFacade
-     */
-    public static function new(string $class): self
-    {
-        enforce(self::exists($class))->orThrow('No class found for: ' . $class);
-
-        return new self(new $class());
-    }
-
-    /**
-     * @param string $class
-     * @param array  $classmap
-     *
-     * @return bool
-     */
-    public static function exists(string $class, array $classmap = []): bool
-    {
-        if (array_key_exists($class, $classmap)) {
-            $class = $classmap[$class];
-        }
-
-        return class_exists($class);
     }
 
     /**
