@@ -6,7 +6,6 @@ use Dgame\Type\Type;
 use ReflectionMethod;
 use ReflectionParameter;
 use ReflectionProperty;
-use function Dgame\Conditional\debug;
 
 /**
  * Class Validator
@@ -46,19 +45,7 @@ final class Validator
      */
     public function isValidProperty(ReflectionProperty $property): bool
     {
-        if (!$property->isPublic()) {
-            debug(ObjectFacade::DEBUG_LABEL)->output('[Error] Property %s is not public', $property->getName());
-
-            return false;
-        }
-
-        if ($property->isStatic()) {
-            debug(ObjectFacade::DEBUG_LABEL)->output('[Error] Property %s is static', $property->getName());
-
-            return false;
-        }
-
-        return true;
+        return $property->isPublic() && !$property->isStatic();
     }
 
     /**
@@ -68,19 +55,7 @@ final class Validator
      */
     public function isValidMethod(ReflectionMethod $method): bool
     {
-        if (!$method->isPublic()) {
-            debug(ObjectFacade::DEBUG_LABEL)->output('[Error] Method %s is not public', $method->getName());
-
-            return false;
-        }
-
-        if ($method->isStatic()) {
-            debug(ObjectFacade::DEBUG_LABEL)->output('[Error] Method %s is static', $method->getName());
-
-            return false;
-        }
-
-        return true;
+        return $method->isPublic() && !$method->isStatic();
     }
 
     /**
@@ -100,32 +75,14 @@ final class Validator
         }
 
         if ($method->getNumberOfRequiredParameters() > 1) {
-            debug(ObjectFacade::DEBUG_LABEL)->output('[Error] Method %s need more than one parameter', $method->getName());
-
             return false;
         }
 
         if ($value === null) {
-            if ($method->getParameters()[0]->allowsNull()) {
-                return true;
-            }
-
-            debug(ObjectFacade::DEBUG_LABEL)->output('[Error] First parameter of method %s is not allowed to be null', $method->getName());
-
-            return false;
+            return $method->getParameters()[0]->allowsNull();
         }
 
-        if (!$this->isValidValue($method->getParameters()[0], $value)) {
-            debug(ObjectFacade::DEBUG_LABEL)->output(
-                '[Warning] Method %s does not accept value %s',
-                $method->getName(),
-                var_export($value, true)
-            );
-
-            return false;
-        }
-
-        return true;
+        return $this->isValidParameterValue($method->getParameters()[0], $value);
     }
 
     /**
@@ -134,7 +91,7 @@ final class Validator
      *
      * @return bool
      */
-    public function isValidValue(ReflectionParameter $parameter, $value): bool
+    public function isValidParameterValue(ReflectionParameter $parameter, $value): bool
     {
         return !$parameter->hasType() || Type::from($parameter)->accept($value);
     }
@@ -151,12 +108,7 @@ final class Validator
         }
 
         $value = $method->invoke($this->facade->getObject());
-        if ($value === null && $method->hasReturnType() && !$method->getReturnType()->allowsNull()) {
-            debug(ObjectFacade::DEBUG_LABEL)->output('[Error] Method %s return value is not allowed to be null', $method->getName());
 
-            return false;
-        }
-
-        return true;
+        return $value !== null || !$method->hasReturnType() || $method->getReturnType()->allowsNull();
     }
 }
