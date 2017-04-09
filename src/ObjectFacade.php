@@ -65,7 +65,7 @@ class ObjectFacade
     final public function setValueByProperty(string $name, $value): bool
     {
         $property = $this->getPropertyByName($name);
-        if ($property !== null && Validator::new($this)->validateProperty($property)) {
+        if ($property !== null && Validator::new($this)->isValidProperty($property)) {
             $property->setValue($this->object, $value);
 
             return true;
@@ -83,7 +83,7 @@ class ObjectFacade
     final public function setValueByMethod(string $name, $value): bool
     {
         $method = $this->getSetterMethod($name);
-        if ($method !== null && Validator::new($this)->validateSetterMethod($method, $value)) {
+        if ($method !== null && Validator::new($this)->isValidSetterMethod($method, $value)) {
             $method->invoke($this->object, $value);
 
             return true;
@@ -115,7 +115,7 @@ class ObjectFacade
     final public function getValueByProperty(string $name)
     {
         $property = $this->getPropertyByName($name);
-        if ($property !== null && Validator::new($this)->validateProperty($property)) {
+        if ($property !== null && Validator::new($this)->isValidProperty($property)) {
             return $property->getValue($this->object);
         }
 

@@ -42,7 +42,7 @@ final class Validator
      *
      * @return bool
      */
-    public function validateProperty(ReflectionProperty $property): bool
+    public function isValidProperty(ReflectionProperty $property): bool
     {
         if (!$property->isPublic()) {
             debug(ObjectFacade::DEBUG_LABEL)->output('[Error] Property %s is not public', $property->getName());
@@ -64,7 +64,7 @@ final class Validator
      *
      * @return bool
      */
-    public function validateMethod(ReflectionMethod $method): bool
+    public function isValidMethod(ReflectionMethod $method): bool
     {
         if (!$method->isPublic()) {
             debug(ObjectFacade::DEBUG_LABEL)->output('[Error] Method %s is not public', $method->getName());
@@ -87,9 +87,9 @@ final class Validator
      *
      * @return bool
      */
-    public function validateSetterMethod(ReflectionMethod $method, $value): bool
+    public function isValidSetterMethod(ReflectionMethod $method, $value): bool
     {
-        if (!$this->validateMethod($method)) {
+        if (!$this->isValidMethod($method)) {
             return false;
         }
 
@@ -113,7 +113,7 @@ final class Validator
      */
     public function validateGetterMethod(ReflectionMethod $method): bool
     {
-        if (!$this->validateMethod($method)) {
+        if (!$this->isValidMethod($method)) {
             return false;
         }
 
