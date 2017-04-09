@@ -77,7 +77,7 @@ final class ObjectFacadeTest extends TestCase
         $exception = new Exception('Test');
         $facade    = new ObjectFacade($exception);
 
-        $this->assertEquals($facade->getObject(), $exception);
+        $this->assertEquals($exception, $facade->getObject());
         $this->assertEquals('Test', $facade->getValueByMethod('message'));
         $this->assertEquals($exception->getMessage(), $facade->getValueByMethod('message'));
         $this->assertEquals($exception->getFile(), $facade->getValueByMethod('file'));
