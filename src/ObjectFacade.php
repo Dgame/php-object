@@ -5,7 +5,6 @@ namespace Dgame\Object;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
-use function Dgame\Conditional\debug;
 use function Dgame\Ensurance\enforce;
 
 /**
@@ -66,35 +65,13 @@ class ObjectFacade
     final public function setValueByProperty(string $name, $value): bool
     {
         $property = $this->getPropertyByName($name);
-        if ($property !== null && $this->validateProperty($property)) {
+        if ($property !== null && Validator::new($this)->validateProperty($property)) {
             $property->setValue($this->object, $value);
 
             return true;
         }
 
         return false;
-    }
-
-    /**
-     * @param ReflectionProperty $property
-     *
-     * @return bool
-     */
-    private function validateProperty(ReflectionProperty $property): bool
-    {
-        if (!$property->isPublic()) {
-            debug(self::DEBUG_LABEL)->output('[Error] Property %s is not public', $property->getName());
-
-            return false;
-        }
-
-        if ($property->isStatic()) {
-            debug(self::DEBUG_LABEL)->output('[Error] Property %s is static', $property->getName());
-
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -106,60 +83,13 @@ class ObjectFacade
     final public function setValueByMethod(string $name, $value): bool
     {
         $method = $this->getSetterMethod($name);
-        if ($method !== null && $this->validateSetterMethod($method, $value)) {
+        if ($method !== null && Validator::new($this)->validateSetterMethod($method, $value)) {
             $method->invoke($this->object, $value);
 
             return true;
         }
 
         return false;
-    }
-
-    /**
-     * @param ReflectionMethod $method
-     *
-     * @return bool
-     */
-    private function validateMethod(ReflectionMethod $method): bool
-    {
-        if (!$method->isPublic()) {
-            debug(self::DEBUG_LABEL)->output('[Error] Method %s is not public', $method->getName());
-
-            return false;
-        }
-
-        if ($method->isStatic()) {
-            debug(self::DEBUG_LABEL)->output('[Error] Method %s is static', $method->getName());
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @param ReflectionMethod $method
-     * @param                  $value
-     *
-     * @return bool
-     */
-    private function validateSetterMethod(ReflectionMethod $method, $value): bool
-    {
-        if (!$this->validateMethod($method)) {
-            return false;
-        }
-
-        if ($value === null && $method->getNumberOfParameters() !== 0 && !$method->getParameters()[0]->allowsNull()) {
-            debug(self::DEBUG_LABEL)->output('[Error] First parameter of method %s is not allowed to be null', $method->getName());
-
-            return false;
-        }
-
-        if ($method->getNumberOfParameters() === 0) {
-            debug(self::DEBUG_LABEL)->output('[Warning] Method %s does not accept any parameters', $method->getName());
-        }
-
-        return true;
     }
 
     /**
@@ -170,32 +100,11 @@ class ObjectFacade
     final public function getValueByMethod(string $name)
     {
         $method = $this->getGetterMethod($name);
-        if ($method !== null && $this->validateGetterMethod($method)) {
+        if ($method !== null && Validator::new($this)->validateGetterMethod($method)) {
             return $method->invoke($this->object);
         }
 
         return null;
-    }
-
-    /**
-     * @param ReflectionMethod $method
-     *
-     * @return bool
-     */
-    private function validateGetterMethod(ReflectionMethod $method): bool
-    {
-        if (!$this->validateMethod($method)) {
-            return false;
-        }
-
-        $value = $method->invoke($this->object);
-        if ($value === null && $method->hasReturnType() && !$method->getReturnType()->allowsNull()) {
-            debug(self::DEBUG_LABEL)->output('[Error] Method %s return value is not allowed to be null', $method->getName());
-
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -206,7 +115,7 @@ class ObjectFacade
     final public function getValueByProperty(string $name)
     {
         $property = $this->getPropertyByName($name);
-        if ($property !== null && $this->validateProperty($property)) {
+        if ($property !== null && Validator::new($this)->validateProperty($property)) {
             return $property->getValue($this->object);
         }
 
