@@ -141,6 +141,8 @@ final class ObjectFacadeTest extends TestCase
         $this->assertEquals(23, $facade->getValueByMethod('foo'));
         $facade->setValueByMethod('foo', null);
         $this->assertEquals(23, $facade->getValueByMethod('foo'));
+        $facade->setValueByMethod('foo', 'abc');
+        $this->assertEquals(23, $facade->getValueByMethod('foo'));
 
         $this->assertNull($facade->getValueByMethod('bar'));
         $facade->setValueByMethod('bar', 1337);

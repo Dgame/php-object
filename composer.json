@@ -14,7 +14,8 @@
     "require": {
         "php": ">=7.0",
         "dgame/php-conditional": "0.5.*",
-        "dgame/php-ensurance": "0.4.*"
+        "dgame/php-ensurance": "0.4.*",
+        "dgame/php-type": "0.4.*"
     },
     "require-dev": {
         "phpunit/phpunit": "5.*.*"

@@ -2,7 +2,9 @@
 
 namespace Dgame\Object;
 
+use Dgame\Type\Type;
 use ReflectionMethod;
+use ReflectionParameter;
 use ReflectionProperty;
 use function Dgame\Conditional\debug;
 
@@ -93,17 +95,48 @@ final class Validator
             return false;
         }
 
-        if ($value === null && $method->getNumberOfParameters() !== 0 && !$method->getParameters()[0]->allowsNull()) {
+        if ($method->getNumberOfParameters() === 0) {
+            return true;
+        }
+
+        if ($method->getNumberOfRequiredParameters() > 1) {
+            debug(ObjectFacade::DEBUG_LABEL)->output('[Error] Method %s need more than one parameter', $method->getName());
+
+            return false;
+        }
+
+        if ($value === null) {
+            if ($method->getParameters()[0]->allowsNull()) {
+                return true;
+            }
+
             debug(ObjectFacade::DEBUG_LABEL)->output('[Error] First parameter of method %s is not allowed to be null', $method->getName());
 
             return false;
         }
 
-        if ($method->getNumberOfParameters() === 0) {
-            debug(ObjectFacade::DEBUG_LABEL)->output('[Warning] Method %s does not accept any parameters', $method->getName());
+        if (!$this->isValidValue($method->getParameters()[0], $value)) {
+            debug(ObjectFacade::DEBUG_LABEL)->output(
+                '[Warning] Method %s does not accept value %s',
+                $method->getName(),
+                var_export($value, true)
+            );
+
+            return false;
         }
 
         return true;
+    }
+
+    /**
+     * @param ReflectionParameter $parameter
+     * @param                     $value
+     *
+     * @return bool
+     */
+    public function isValidValue(ReflectionParameter $parameter, $value): bool
+    {
+        return !$parameter->hasType() || Type::from($parameter)->accept($value);
     }
 
     /**
