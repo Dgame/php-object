@@ -2,6 +2,7 @@
 
 namespace Dgame\Object;
 
+use ICanBoogie\Inflector;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -56,6 +57,59 @@ class ObjectFacade
 
     /**
      * @param string $name
+     *
+     * @return array
+     */
+    private function getNameVariations(string $name): array
+    {
+        return [
+            Inflector::get()->camelize($name, Inflector::DOWNCASE_FIRST_LETTER),
+            Inflector::get()->camelize($name, Inflector::UPCASE_FIRST_LETTER),
+            Inflector::get()->underscore($name)
+        ];
+    }
+
+    /**
+     * @param string $name
+     * @param        $value
+     *
+     * @return bool
+     */
+    final public function setValue(string $name, $value): bool
+    {
+        foreach ($this->getNameVariations($name) as $attribute) {
+            if ($this->setValueByProperty($attribute, $value) || $this->setValueByMethod($attribute, $value)) {
+                return true;
+            }
+        }
+
+        return $this->invokeMethod('__set', $name, $value);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed|null
+     */
+    final public function getValue(string $name)
+    {
+        foreach ($this->getNameVariations($name) as $attribute) {
+            $property = $this->getPropertyByName($attribute);
+            if ($property !== null && Validator::new($this)->isValidProperty($property)) {
+                return $property->getValue($this->object);
+            }
+
+            $method = $this->getGetterMethod($name);
+            if ($method !== null && Validator::new($this)->isValidGetterMethod($method)) {
+                return $method->invoke($this->object);
+            }
+        }
+
+        return $this->invokeMethod('__get', $name);
+    }
+
+    /**
+     * @param string $name
      * @param        $value
      *
      * @return bool
@@ -98,7 +152,7 @@ class ObjectFacade
     final public function getValueByMethod(string $name)
     {
         $method = $this->getGetterMethod($name);
-        if ($method !== null && Validator::new($this)->validateGetterMethod($method)) {
+        if ($method !== null && Validator::new($this)->isValidGetterMethod($method)) {
             return $method->invoke($this->object);
         }
 
@@ -153,6 +207,22 @@ class ObjectFacade
             if ($method !== null) {
                 return $method;
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $name
+     * @param array  ...$args
+     *
+     * @return mixed|null
+     */
+    final public function invokeMethod(string $name, ...$args)
+    {
+        $method = $this->getMethodByName($name);
+        if ($method !== null && Validator::new($this)->areValidMethodArguments($method, ...$args)) {
+            return $method->invokeArgs($this->object, $args);
         }
 
         return null;

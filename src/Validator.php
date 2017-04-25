@@ -101,7 +101,7 @@ final class Validator
      *
      * @return bool
      */
-    public function validateGetterMethod(ReflectionMethod $method): bool
+    public function isValidGetterMethod(ReflectionMethod $method): bool
     {
         if (!$this->isValidMethod($method)) {
             return false;
@@ -110,5 +110,50 @@ final class Validator
         $value = $method->invoke($this->facade->getObject());
 
         return $value !== null || !$method->hasReturnType() || $method->getReturnType()->allowsNull();
+    }
+
+    /**
+     * @param ReflectionMethod $method
+     * @param array            ...$args
+     *
+     * @return bool
+     */
+    public function areValidMethodArguments(ReflectionMethod $method, ...$args): bool
+    {
+        if (!$this->isValidMethod($method)) {
+            return false;
+        }
+
+        if (count($args) < $method->getNumberOfRequiredParameters()) {
+            return false;
+        }
+
+        return $this->validateMethodArguments($method, ...$args);
+    }
+
+    /**
+     * @param ReflectionMethod $method
+     * @param array            ...$args
+     *
+     * @return bool
+     */
+    private function validateMethodArguments(ReflectionMethod $method, ...$args): bool
+    {
+        $parameters = $method->getParameters();
+        foreach ($args as $i => $arg) {
+            if (!array_key_exists($i, $parameters)) {
+                break;
+            }
+
+            if ($arg === null && !$parameters[$i]->allowsNull()) {
+                return false;
+            }
+
+            if (!$this->isValidParameterValue($parameters[$i], $arg)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
