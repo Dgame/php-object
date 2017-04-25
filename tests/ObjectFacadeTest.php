@@ -59,8 +59,7 @@ final class ObjectFacadeTest extends TestCase
     public function testSetterMethod()
     {
         $facade = new ObjectFacade(
-            new class()
-            {
+            new class() {
                 public function setFoo()
                 {
                 }
@@ -89,8 +88,7 @@ final class ObjectFacadeTest extends TestCase
     public function testGetValueByProperty()
     {
         $facade = new ObjectFacade(
-            new class()
-            {
+            new class() {
                 public $foo = 42;
                 public $bar = Exception::class;
             }
