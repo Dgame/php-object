@@ -178,3 +178,29 @@ $facade->setValueByProperty('foo', 1337);
 $this->assertEquals(1337, $facade->getValueByProperty('foo'));
 $this->assertEquals($facade->getObject()->foo, $facade->getValueByProperty('foo'));
 ```
+
+### setValue / getValue
+```php
+$facade = new ObjectFacade(
+    new class() {
+        public $foo = 42;
+    }
+);
+
+$facade->setValue('foo', 3537);
+$this->assertEquals(3537, $facade->getValue('foo'));
+```
+
+```php
+new class() {
+    private $foo = 42;
+
+    public function setFoo(int $foo)
+    {
+        $this->foo = $foo;
+    }
+}
+
+$facade->setValue('foo', 3537);
+$this->assertEquals(3537, $facade->getValue('foo'));
+```
