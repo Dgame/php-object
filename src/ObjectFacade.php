@@ -83,7 +83,13 @@ class ObjectFacade
             }
         }
 
-        return $this->invokeMethod('__set', $name, $value);
+        if ($this->hasMethod('__set')) {
+            $this->invokeMethod('__set', $name, $value);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
