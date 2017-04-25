@@ -13,8 +13,6 @@ use function Dgame\Ensurance\enforce;
  */
 class ObjectFacade
 {
-    const DEBUG_LABEL = 'Dgame_Object_Facade';
-
     /**
      * @var object
      */
