@@ -83,6 +83,17 @@ class ObjectFacade
             }
         }
 
+        return $this->tryMagicSet($name, $value);
+    }
+
+    /**
+     * @param string $name
+     * @param        $value
+     *
+     * @return bool
+     */
+    private function tryMagicSet(string $name, $value): bool
+    {
         if ($this->hasMethod('__set')) {
             $this->invokeMethod('__set', $name, $value);
 
