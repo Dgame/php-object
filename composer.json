@@ -13,8 +13,8 @@
     ],
     "require": {
         "php": ">=7.0",
-        "dgame/php-ensurance": "0.4.*",
-        "dgame/php-type": "0.4.*",
+        "dgame/php-ensurance": "*",
+        "dgame/php-type": "*",
         "icanboogie/inflector": "1.4.*"
     },
     "require-dev": {
