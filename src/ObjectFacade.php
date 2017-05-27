@@ -2,7 +2,7 @@
 
 namespace Dgame\Object;
 
-use ICanBoogie\Inflector;
+use Dgame\Variants\Variants;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -57,27 +57,13 @@ class ObjectFacade
 
     /**
      * @param string $name
-     *
-     * @return array
-     */
-    private function getNameVariations(string $name): array
-    {
-        return [
-            Inflector::get()->camelize($name, Inflector::DOWNCASE_FIRST_LETTER),
-            Inflector::get()->camelize($name, Inflector::UPCASE_FIRST_LETTER),
-            Inflector::get()->underscore($name)
-        ];
-    }
-
-    /**
-     * @param string $name
      * @param        $value
      *
      * @return bool
      */
     final public function setValue(string $name, $value): bool
     {
-        foreach ($this->getNameVariations($name) as $attribute) {
+        foreach (Variants::ofArguments($name)->withCamelSnakeCase() as $attribute) {
             if ($this->setValueByProperty($attribute, $value) || $this->setValueByMethod($attribute, $value)) {
                 return true;
             }
@@ -110,7 +96,7 @@ class ObjectFacade
      */
     final public function getValue(string $name)
     {
-        foreach ($this->getNameVariations($name) as $attribute) {
+        foreach (Variants::ofArguments($name)->withCamelSnakeCase() as $attribute) {
             $property = $this->getPropertyByName($attribute);
             if ($property !== null && Validator::new($this)->isValidProperty($property)) {
                 return $property->getValue($this->object);
