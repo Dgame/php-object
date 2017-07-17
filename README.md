@@ -1,7 +1,7 @@
 # php-object
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Dgame/php-object/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Dgame/php-object/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/Dgame/php-object/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Dgame/php-object/?branch=master)
+[![codecov](https://codecov.io/gh/Dgame/php-object/branch/master/graph/badge.svg)](https://codecov.io/gh/Dgame/php-object)
 [![Build Status](https://scrutinizer-ci.com/g/Dgame/php-object/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Dgame/php-object/build-status/master)
 [![StyleCI](https://styleci.io/repos/87475805/shield?branch=master)](https://styleci.io/repos/87475805)
 [![Build Status](https://travis-ci.org/Dgame/php-object.svg?branch=master)](https://travis-ci.org/Dgame/php-object)
