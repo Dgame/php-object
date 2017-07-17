@@ -59,7 +59,8 @@ final class ObjectFacadeTest extends TestCase
     public function testSetterMethod()
     {
         $facade = new ObjectFacade(
-            new class() {
+            new class()
+            {
                 public function setFoo()
                 {
                 }
@@ -88,7 +89,8 @@ final class ObjectFacadeTest extends TestCase
     public function testGetValueByProperty()
     {
         $facade = new ObjectFacade(
-            new class() {
+            new class()
+            {
                 public $foo = 42;
                 public $bar = Exception::class;
             }
@@ -104,7 +106,8 @@ final class ObjectFacadeTest extends TestCase
     public function testSetValueByMethod()
     {
         $facade = new ObjectFacade(
-            new class() {
+            new class()
+            {
                 private $foo = 42;
                 private $bar;
 
@@ -160,7 +163,8 @@ final class ObjectFacadeTest extends TestCase
     public function testSetValueByProperty()
     {
         $facade = new ObjectFacade(
-            new class() {
+            new class()
+            {
                 public $foo = 42;
             }
         );
@@ -178,6 +182,43 @@ final class ObjectFacadeTest extends TestCase
         $this->assertEquals($facade->getObject()->foo, $facade->getValueByProperty('foo'));
         $facade->setValue('foo', 3537);
         $this->assertEquals(3537, $facade->getValue('foo'));
+    }
+
+    public function testMagic()
+    {
+        $facade = new ObjectFacade(
+            new class()
+            {
+                private $attrs = [];
+
+                public function __set(string $name, $value)
+                {
+                    $this->attrs[$name] = $value;
+                }
+
+                public function __get(string $name)
+                {
+                    return $this->attrs[$name];
+                }
+
+                public function __isset(string $name)
+                {
+                    return $this->hasAttribute($name);
+                }
+
+                public function hasAttribute(string $name): bool
+                {
+                    return array_key_exists($name, $this->attrs);
+                }
+            }
+        );
+
+        $this->assertFalse($facade->hasProperty('foo'));
+        $this->assertFalse($facade->getObject()->hasAttribute('foo'));
+        $facade->setValue('foo', 42);
+        $this->assertTrue($facade->isSet('foo'));
+        $this->assertTrue($facade->getObject()->hasAttribute('foo'));
+        $this->assertEquals(42, $facade->getValue('foo'));
     }
 
     private function new(string $class)

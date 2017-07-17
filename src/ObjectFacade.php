@@ -266,6 +266,16 @@ class ObjectFacade
      *
      * @return bool
      */
+    final public function isSet(string $name): bool
+    {
+        return $this->hasProperty($name) || $this->invokeMethod('__isset', $name) === true;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
     final public function hasMethod(string $name): bool
     {
         return $this->getReflection()->hasMethod($name);
