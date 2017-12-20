@@ -14,13 +14,13 @@ use ReflectionProperty;
  */
 final class ObjectFacadeTest extends TestCase
 {
-    public function testHasMethod()
+    public function testHasMethod(): void
     {
         $this->assertTrue($this->new(Exception::class)->hasMethod('getMessage'));
         $this->assertFalse($this->new(Exception::class)->hasMethod('foo'));
     }
 
-    public function testHasProperty()
+    public function testHasProperty(): void
     {
         foreach (['message', 'code', 'file', 'line'] as $property) {
             $this->assertTrue($this->new(Exception::class)->hasProperty($property));
@@ -28,7 +28,7 @@ final class ObjectFacadeTest extends TestCase
         $this->assertFalse($this->new(Exception::class)->hasProperty('foo'));
     }
 
-    public function testGetPropertyByName()
+    public function testGetPropertyByName(): void
     {
         foreach (['message', 'code', 'file', 'line'] as $name) {
             $property = $this->new(Exception::class)->getPropertyByName($name);
@@ -39,7 +39,7 @@ final class ObjectFacadeTest extends TestCase
         }
     }
 
-    public function testGetMethodByName()
+    public function testGetMethodByName(): void
     {
         $method = $this->new(Exception::class)->getMethodByName('getMessage');
 
@@ -48,7 +48,7 @@ final class ObjectFacadeTest extends TestCase
         $this->assertNotEquals(0, (ReflectionMethod::IS_PUBLIC | ReflectionMethod::IS_FINAL) & $method->getModifiers());
     }
 
-    public function testGetterMethod()
+    public function testGetterMethod(): void
     {
         $method = $this->new(Exception::class)->getGetterMethod('message');
 
@@ -56,11 +56,11 @@ final class ObjectFacadeTest extends TestCase
         $this->assertEquals('getMessage', $method->getName());
     }
 
-    public function testSetterMethod()
+    public function testSetterMethod(): void
     {
         $facade = new ObjectFacade(
             new class() {
-                public function setFoo()
+                public function setFoo(): void
                 {
                 }
             }
@@ -72,7 +72,7 @@ final class ObjectFacadeTest extends TestCase
         $this->assertEquals('setFoo', $method->getName());
     }
 
-    public function testGetValueByMethod()
+    public function testGetValueByMethod(): void
     {
         $exception = new Exception('Test');
         $facade    = new ObjectFacade($exception);
@@ -85,7 +85,7 @@ final class ObjectFacadeTest extends TestCase
         $this->assertNull($facade->getValueByMethod('unknown'));
     }
 
-    public function testGetValueByProperty()
+    public function testGetValueByProperty(): void
     {
         $facade = new ObjectFacade(
             new class() {
@@ -101,19 +101,19 @@ final class ObjectFacadeTest extends TestCase
         $this->assertNull($this->new(Exception::class)->getValueByProperty('file'));
     }
 
-    public function testSetValueByMethod()
+    public function testSetValueByMethod(): void
     {
         $facade = new ObjectFacade(
             new class() {
                 private $foo = 42;
                 private $bar;
 
-                public function setFoo(int $foo)
+                public function setFoo(int $foo): void
                 {
                     $this->foo = $foo;
                 }
 
-                public function setFooBar()
+                public function setFooBar(): void
                 {
                     $this->foo = 1;
                     $this->bar = 2;
@@ -124,7 +124,7 @@ final class ObjectFacadeTest extends TestCase
                     return $this->foo;
                 }
 
-                public function setBar(int $bar = null)
+                public function setBar(int $bar = null): void
                 {
                     $this->bar = $bar;
                 }
@@ -157,7 +157,7 @@ final class ObjectFacadeTest extends TestCase
         $this->assertEquals(2, $facade->getValueByMethod('bar'));
     }
 
-    public function testSetValueByProperty()
+    public function testSetValueByProperty(): void
     {
         $facade = new ObjectFacade(
             new class() {
@@ -180,13 +180,13 @@ final class ObjectFacadeTest extends TestCase
         $this->assertEquals(3537, $facade->getValue('foo'));
     }
 
-    public function testMagic()
+    public function testMagic(): void
     {
         $facade = new ObjectFacade(
             new class() {
                 private $attrs = [];
 
-                public function __set(string $name, $value)
+                public function __set(string $name, $value): void
                 {
                     $this->attrs[$name] = $value;
                 }
