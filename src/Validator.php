@@ -5,7 +5,6 @@ namespace Dgame\Object;
 use Dgame\Type\Type;
 use ReflectionMethod;
 use ReflectionParameter;
-use ReflectionProperty;
 
 /**
  * Class Validator
@@ -39,26 +38,6 @@ final class Validator
     }
 
     /**
-     * @param ReflectionProperty $property
-     *
-     * @return bool
-     */
-    public function isValidProperty(ReflectionProperty $property): bool
-    {
-        return $property->isPublic() && !$property->isStatic();
-    }
-
-    /**
-     * @param ReflectionMethod $method
-     *
-     * @return bool
-     */
-    public function isValidMethod(ReflectionMethod $method): bool
-    {
-        return $method->isPublic() && !$method->isStatic();
-    }
-
-    /**
      * @param ReflectionMethod $method
      * @param                  $value
      *
@@ -66,7 +45,7 @@ final class Validator
      */
     public function isValidSetterMethod(ReflectionMethod $method, $value): bool
     {
-        if (!$this->isValidMethod($method)) {
+        if (!$method->isPublic()) {
             return false;
         }
 
@@ -103,11 +82,15 @@ final class Validator
      */
     public function isValidGetterMethod(ReflectionMethod $method): bool
     {
-        if (!$this->isValidMethod($method)) {
+        if (!$method->isPublic()) {
             return false;
         }
 
-        $value = $method->invoke($this->facade->getObject());
+        try {
+            $value = $method->invoke($this->facade->getObject());
+        } catch (\Throwable $t) {
+            return false;
+        }
 
         return $value !== null || !$method->hasReturnType() || $method->getReturnType()->allowsNull();
     }
@@ -120,7 +103,7 @@ final class Validator
      */
     public function areValidMethodArguments(ReflectionMethod $method, ...$args): bool
     {
-        if (!$this->isValidMethod($method)) {
+        if (!$method->isPublic()) {
             return false;
         }
 
