@@ -220,4 +220,38 @@ final class ObjectFacadeTest extends TestCase
     {
         return new ObjectFacade(new $class());
     }
+
+    public function testSetValueByMethodDirect(): void
+    {
+        $facade = new ObjectFacade(
+            new class() {
+                public $value;
+
+                public function foo(string $value): void
+                {
+                    $this->value = $value;
+                }
+            }
+        );
+        $facade->setValueByMethod('foo', 42);
+
+        $this->assertEquals(42, $facade->getValue('value'));
+    }
+
+    public function testSetValueByMethodWithSetter(): void
+    {
+        $facade = new ObjectFacade(
+            new class() {
+                public $value;
+
+                public function setFoo(string $value): void
+                {
+                    $this->value = $value;
+                }
+            }
+        );
+        $facade->setValueByMethod('foo', 42);
+
+        $this->assertEquals(42, $facade->getValue('value'));
+    }
 }

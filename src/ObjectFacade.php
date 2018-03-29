@@ -178,35 +178,35 @@ class ObjectFacade
     }
 
     /**
-     * @param string $postfix
+     * @param string $name
      *
      * @return null|ReflectionMethod
      */
-    final public function getSetterMethod(string $postfix)
+    final public function getSetterMethod(string $name): ?ReflectionMethod
     {
-        return $this->getMethod($postfix, ['set', 'append']);
+        return $this->getMethodByName($name) ?? $this->getMethod($name, ['set', 'append']);
     }
 
     /**
-     * @param string $postfix
+     * @param string $name
      *
      * @return null|ReflectionMethod
      */
-    final public function getGetterMethod(string $postfix)
+    final public function getGetterMethod(string $name): ?ReflectionMethod
     {
-        return $this->getMethod($postfix, ['get']);
+        return $this->getMethodByName($name) ?? $this->getMethod($name, ['get']);
     }
 
     /**
-     * @param string $postfix
+     * @param string $name
      * @param array  $prefixe
      *
      * @return null|ReflectionMethod
      */
-    final public function getMethod(string $postfix, array $prefixe)
+    final public function getMethod(string $name, array $prefixe): ?ReflectionMethod
     {
         foreach ($prefixe as $prefix) {
-            $method = $this->getMethodByName($prefix . ucfirst($postfix));
+            $method = $this->getMethodByName($prefix . ucfirst($name));
             if ($method !== null) {
                 return $method;
             }
@@ -236,7 +236,7 @@ class ObjectFacade
      *
      * @return null|ReflectionMethod
      */
-    final public function getMethodByName(string $name)
+    final public function getMethodByName(string $name): ?ReflectionMethod
     {
         return $this->hasMethod($name) ? $this->getReflection()->getMethod($name) : null;
     }
@@ -246,7 +246,7 @@ class ObjectFacade
      *
      * @return null|ReflectionProperty
      */
-    final public function getPropertyByName(string $name)
+    final public function getPropertyByName(string $name): ?ReflectionProperty
     {
         return $this->hasProperty($name) ? $this->getReflection()->getProperty($name) : null;
     }
