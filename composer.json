@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": "^7.1",
-        "dgame/php-ensurance": "^1",
+        "dgame/php-ensurance": "^1 || ^2",
         "dgame/php-type": "^0.6.0",
         "dgame/php-variants": "^0.1"
     },
