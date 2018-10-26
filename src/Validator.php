@@ -72,7 +72,7 @@ final class Validator
      */
     public function isValidParameterValue(ReflectionParameter $parameter, $value): bool
     {
-        return !$parameter->hasType() || Type::from($parameter)->accept($value);
+        return !$parameter->hasType() || Type::import($parameter)->accept($value);
     }
 
     /**
