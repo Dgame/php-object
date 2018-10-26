@@ -2,7 +2,6 @@
 
 namespace Dgame\Object;
 
-use Dgame\Type\Type;
 use Dgame\Type\TypeFactory;
 use ReflectionMethod;
 use ReflectionParameter;
