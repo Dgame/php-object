@@ -3,6 +3,7 @@
 namespace Dgame\Object;
 
 use Dgame\Type\Type;
+use Dgame\Type\TypeFactory;
 use ReflectionMethod;
 use ReflectionParameter;
 
@@ -72,7 +73,7 @@ final class Validator
      */
     public function isValidParameterValue(ReflectionParameter $parameter, $value): bool
     {
-        return !$parameter->hasType() || Type::from($parameter)->accept($value);
+        return !$parameter->hasType() || TypeFactory::reflection($parameter)->accept($value);
     }
 
     /**
