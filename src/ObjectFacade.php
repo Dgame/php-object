@@ -2,11 +2,11 @@
 
 namespace Dgame\Object;
 
+use function Dgame\Ensurance\enforce;
 use Dgame\Variants\Variants;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
-use function Dgame\Ensurance\enforce;
 
 /**
  * Class ObjectFacade
