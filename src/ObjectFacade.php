@@ -57,7 +57,7 @@ class ObjectFacade
 
     /**
      * @param string $name
-     * @param        $value
+     * @param mixed  $value
      *
      * @return bool
      */
@@ -74,7 +74,7 @@ class ObjectFacade
 
     /**
      * @param string $name
-     * @param        $value
+     * @param mixed $value
      *
      * @return bool
      */
@@ -113,7 +113,7 @@ class ObjectFacade
 
     /**
      * @param string $name
-     * @param        $value
+     * @param mixed $value
      *
      * @return bool
      */
@@ -131,7 +131,7 @@ class ObjectFacade
 
     /**
      * @param string $name
-     * @param        $value
+     * @param mixed $value
      *
      * @return bool
      */

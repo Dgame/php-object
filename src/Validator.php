@@ -5,6 +5,7 @@ namespace Dgame\Object;
 use Dgame\Type\TypeFactory;
 use ReflectionMethod;
 use ReflectionParameter;
+use Throwable;
 
 /**
  * Class Validator
@@ -39,7 +40,7 @@ final class Validator
 
     /**
      * @param ReflectionMethod $method
-     * @param                  $value
+     * @param mixed            $value
      *
      * @return bool
      */
@@ -66,7 +67,7 @@ final class Validator
 
     /**
      * @param ReflectionParameter $parameter
-     * @param                     $value
+     * @param mixed               $value
      *
      * @return bool
      */
@@ -88,11 +89,13 @@ final class Validator
 
         try {
             $value = $method->invoke($this->facade->getObject());
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             return false;
         }
 
-        return $value !== null || !$method->hasReturnType() || $method->getReturnType()->allowsNull();
+        $returnType = $method->getReturnType();
+
+        return $value !== null || $returnType === null || $returnType->allowsNull();
     }
 
     /**
@@ -140,3 +143,4 @@ final class Validator
         return true;
     }
 }
+
